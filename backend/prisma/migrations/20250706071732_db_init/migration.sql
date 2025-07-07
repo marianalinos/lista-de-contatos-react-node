@@ -1,6 +1,7 @@
 -- CreateTable
 CREATE TABLE "Pessoa" (
     "pessoa_id" SERIAL NOT NULL,
+    "pessoa_nome" TEXT NOT NULL,
     "pessoa_cpf" TEXT NOT NULL,
 
     CONSTRAINT "Pessoa_pkey" PRIMARY KEY ("pessoa_id")
