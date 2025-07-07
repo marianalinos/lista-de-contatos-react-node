@@ -21,6 +21,6 @@ model Contato {
   contato_id        Int     @id @default(autoincrement())
   contato_tipo      Boolean   
   contato_descricao String 
-  pessoa_id         Int
-  pessoa            Pessoa  @relation(fields: [pessoa_id], references: [pessoa_id])
+  contato_pessoa_id Int
+  pessoa            Pessoa  @relation(fields: [contato_pessoa_id], references: [pessoa_id])
 }

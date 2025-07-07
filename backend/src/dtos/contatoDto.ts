@@ -1,11 +1,11 @@
 export interface CreateContatoDto {
-    tipo: boolean;
-    descricao: string;
-    pessoa_id: number;
+    contato_tipo: boolean;
+    contato_descricao: string;
+    contato_pessoa_id: number;
 }
 export interface UpdateContatoDto {
-    id: number;
-    tipo: boolean;
-    descricao: string;
-    pessoa_id: number;
+    contato_id: number;
+    contato_tipo: boolean;
+    contato_descricao: string;
+    contato_pessoa_id: number;
 }
