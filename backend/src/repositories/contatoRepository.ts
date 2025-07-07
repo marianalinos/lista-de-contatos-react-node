@@ -58,8 +58,12 @@ export class ContatoRepository {
     );
   }
 
-  public async getAllContatos(): Promise<ContatoModel[]> {
-    const contatos = await this.prisma.contato.findMany();
+  public async getAllContatos(pessoa_id?: number): Promise<ContatoModel[]> {
+    const contatos = await this.prisma.contato.findMany({
+      where: {
+        contato_pessoa_id: pessoa_id,
+      },
+    });
     return contatos.map(
       (c) =>
         new ContatoModel(

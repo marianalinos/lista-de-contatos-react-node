@@ -48,7 +48,8 @@ export class ContatoController {
 
   public async findAll(req: Request, res: Response): Promise<void> {
     try {
-      const contatos = await this.contatoService.getAllContatos();
+      const pessoaId = req.query.pessoa_id ? parseInt(req.query.pessoa_id as string) : undefined;
+      const contatos = await this.contatoService.getAllContatos(pessoaId);
       res.json(contatos);
     } catch (error) {
       res.status(500).json({ error: "Erro ao buscar contatos" });

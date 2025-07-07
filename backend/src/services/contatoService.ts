@@ -24,8 +24,8 @@ export class ContatoService {
     return await this.contatoRepository.getContatoById(contatoId);
   }
 
-  public async getAllContatos(): Promise<ContatoModel[]> {
-    return await this.contatoRepository.getAllContatos();
+  public async getAllContatos(pessoaId?: number): Promise<ContatoModel[]> {
+    return await this.contatoRepository.getAllContatos(pessoaId);
   }
 
   public async deleteContato(contatoId: number): Promise<void> {

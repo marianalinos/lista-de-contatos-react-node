@@ -1,15 +1,23 @@
 import { PencilIcon, XCircleIcon, PlusCircle } from "@phosphor-icons/react";
-import { deleteContato, getContatos, type Contato } from "../api/contatos";
+import {
+  createContato,
+  deleteContato,
+  getContatos,
+  type Contato,
+} from "../api/contatos";
 import { useEffect, useState } from "react";
-import { GenericFormModal } from "../components/GenericFormModal";
+import { GenericForm } from "../components/GenericForm";
+import React from "react";
+import { useParams } from "react-router-dom";
 
 export default function Contato() {
   const [contatos, setContatos] = useState<Contato[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingContato, setEditingContato] = useState<Contato | null>(null);
+  const { pessoaId } = useParams<{ pessoaId: string }>();
 
   const loadContatos = async () => {
-    const response = await getContatos();
+    const response = await getContatos(Number(pessoaId));
     setContatos(response);
   };
 
@@ -40,12 +48,6 @@ export default function Contato() {
       validate: (v: string) =>
         v.trim() === "" ? "Descrição é obrigatória" : null,
     },
-    {
-      name: "contato_pessoa_id",
-      label: "Pessoa ID",
-      validate: (v: string) =>
-        /^\d+$/.test(v) ? null : "Deve ser um número inteiro",
-    },
   ];
 
   const updateFormFields = [
@@ -58,7 +60,17 @@ export default function Contato() {
   ];
 
   const handleSubmitInsert = async (data: Record<string, string>) => {
-    alert("Novo contato:\n" + JSON.stringify(data, null, 2));
+    if (!pessoaId) {
+      alert("Pessoa ID não encontrado na URL.");
+      return;
+    }
+
+    await createContato({
+      contato_tipo: Boolean(data.contato_tipo),
+      contato_descricao: data.contato_descricao,
+      contato_pessoa_id: Number(pessoaId),
+    });
+
     setModalOpen(false);
     await loadContatos();
   };
@@ -69,18 +81,38 @@ export default function Contato() {
     await loadContatos();
   };
 
+  // When opening new contact form, close editing form
+  const openNewContactForm = () => {
+    setEditingContato(null);
+    setModalOpen(true);
+  };
+
+  // When editing a contact, close new contact form
+  const openEditContactForm = (contato: Contato) => {
+    setModalOpen(false);
+    setEditingContato(contato);
+  };
+
   return (
     <div className="p-4 max-w-3xl mx-auto">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-bold">Contatos</h1>
         <button
-          onClick={() => setModalOpen(true)}
+          onClick={openNewContactForm}
           className="flex items-center gap-1 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
         >
           <PlusCircle size={20} />
           Novo
         </button>
       </div>
+
+      <GenericForm
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onSubmit={handleSubmitInsert}
+        fields={formFields}
+        title="Novo Contato"
+      />
 
       <div className="overflow-x-auto">
         <table className="min-w-full border border-gray-300 rounded shadow-sm text-sm">
@@ -92,28 +124,56 @@ export default function Contato() {
             </tr>
           </thead>
           <tbody>
-            {contatos.map((contato) => (
-              <tr key={contato.contato_id} className="hover:bg-gray-50">
-                <td className="px-4 py-2 border-b">
-                  {contato.contato_tipo ? "Email" : "Telefone"}
-                </td>
-                <td className="px-4 py-2 border-b">
-                  {contato.contato_descricao}
-                </td>
-                <td className="px-4 py-2 border-b">
-                  <PencilIcon
-                    size={20}
-                    className="inline mr-2 text-blue-500 cursor-pointer"
-                    onClick={() => setEditingContato(contato)}
-                  />
-                  <XCircleIcon
-                    size={20}
-                    className="inline text-red-500 cursor-pointer"
-                    onClick={() => handleDelete(contato.contato_id)}
-                  />
-                </td>
-              </tr>
-            ))}
+            {contatos.map((contato) => {
+              const isEditing =
+                editingContato?.contato_id === contato.contato_id;
+              return (
+                <React.Fragment key={contato.contato_id}>
+                  <tr className="hover:bg-gray-50">
+                    <td className="px-4 py-2 border-b">
+                      {contato.contato_tipo ? "Email" : "Telefone"}
+                    </td>
+                    <td className="px-4 py-2 border-b">
+                      {contato.contato_descricao}
+                    </td>
+                    <td className="px-4 py-2 border-b">
+                      <PencilIcon
+                        size={20}
+                        className="inline mr-2 text-blue-500 cursor-pointer"
+                        onClick={() => openEditContactForm(contato)}
+                      />
+                      <XCircleIcon
+                        size={20}
+                        className="inline text-red-500 cursor-pointer"
+                        onClick={() => handleDelete(contato.contato_id)}
+                      />
+                    </td>
+                  </tr>
+
+                  {isEditing && (
+                    <tr>
+                      <td colSpan={3} className="p-4 bg-gray-50">
+                        <GenericForm
+                          isOpen={true}
+                          onClose={() => setEditingContato(null)}
+                          onSubmit={handleSubmitUpdate}
+                          fields={updateFormFields}
+                          initialValues={{
+                            contato_id: String(contato.contato_id),
+                            contato_tipo: String(contato.contato_tipo),
+                            contato_descricao: contato.contato_descricao,
+                            contato_pessoa_id: String(
+                              contato.contato_pessoa_id
+                            ),
+                          }}
+                          title={`Editar Contato #${contato.contato_id}`}
+                        />
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
+              );
+            })}
           </tbody>
         </table>
 
@@ -123,32 +183,6 @@ export default function Contato() {
           </p>
         )}
       </div>
-
-      <GenericFormModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        onSubmit={handleSubmitInsert}
-        fields={formFields}
-        title="Novo Contato"
-      />
-
-      <GenericFormModal
-        isOpen={!!editingContato}
-        onClose={() => setEditingContato(null)}
-        onSubmit={handleSubmitUpdate}
-        fields={updateFormFields}
-        initialValues={
-          editingContato
-            ? {
-                contato_id: String(editingContato.contato_id),
-                contato_tipo: String(editingContato.contato_tipo),
-                contato_descricao: editingContato.contato_descricao,
-                contato_pessoa_id: String(editingContato.contato_pessoa_id),
-              }
-            : {}
-        }
-        title="Editar Contato"
-      />
     </div>
   );
 }
