@@ -1,6 +1,6 @@
-# Projeto Integrador - Aplicativo (nome a definir)
+# Projeto fullstack Node.js e React
 
-Este repositório contém o código-fonte e os arquivos necessários para executar o aplicativo do Projeto Integrador da disciplina. O aplicativo ainda está em desenvolvimento e seu nome ainda não foi definido.
+Este repositório contém o código-fonte e os arquivos necessários para executar o projeto para a vaga de fullstack. 
 
 ## Requisitos
 
@@ -29,24 +29,12 @@ O aplicativo usa variáveis de ambiente para configurar algumas de suas funciona
 Para executar o aplicativo, basta clonar o repositório e executar o comando `docker compose up` no diretório raiz do projeto. Isso irá construir e iniciar os contêineres necessários para executar o aplicativo.
 
 ```bash
-git clone https://github.com/guilhermepsch/projeto-integrador.git
-cd projeto-integrador
+git clone https://github.com/marianalinos/teste-magazord-contatos
+cd teste-magazord-contatos
 docker compose up
 ```
 
 Após executar este comando, o aplicativo deverá estar disponível no localhost na porta que foi configurada no arquivo `.env`, tanto para web, como para backend e o banco de dados, é possível verificar o link exato na saída do comando.
-
-### Populando o banco de dados
-
-Assim que o serviço estiver rodando pela primeira vez, será necessário que você rode as migrations e o seed do banco, isso sera possível através de você entrar no bash do container e rodar dois comandos do prisma.
-
-```bash
-docker exec -it pi-backend /bin/bash
-npx prisma migrate dev
-npx prisma db seed 
-```
-
-Com isto, o banco estará atualizado e com alguns registros prontos para serem inseridos.
 
 ## Parando o aplicativo
 
@@ -57,7 +45,3 @@ docker compose down
 ```
 
 Isso irá parar e remover os contêineres criados.
-
-## Contribuindo
-
-Este é um projeto em desenvolvimento e de faculdade, portanto, não é esperado ou desejado que haja contribuições externas. No entanto, se você deseja contribuir, sinta-se à vontade para abrir uma issue.
