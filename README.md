@@ -8,15 +8,11 @@ Para executar o aplicativo, é necessário ter instalado o Docker e o plugin Doc
 
 ### Docker
 
-Docker é uma plataforma de software que permite criar, testar e executar aplicativos em contêineres. Ele permite que desenvolvedores criem aplicativos rapidamente e facilmente, sem se preocupar com a configuração do ambiente ou com problemas de compatibilidade. Para instalar o Docker, siga as instruções do site oficial:
-
-[Docker](https://docs.docker.com/engine/install/)
+Docker é uma plataforma de software que permite criar, testar e executar aplicativos em contêineres. Ele permite que desenvolvedores criem aplicativos rapidamente e facilmente, sem se preocupar com a configuração do ambiente ou com problemas de compatibilidade. Para instalar o Docker, siga as instruções do site oficial: [Docker](https://docs.docker.com/engine/install/)
 
 ### Docker Compose
 
-O Docker Compose é um plugin para o Docker que permite definir e executar aplicativos com vários contêineres. Ele permite que você configure vários contêineres em um único arquivo de configuração, tornando mais fácil para você implantar e gerenciar seus aplicativos. Para instalar o Docker Compose, siga as instruções do site oficial:
-
-[Docker Compose](https://docs.docker.com/compose/install/)
+O Docker Compose é um plugin para o Docker que permite definir e executar aplicativos com vários contêineres. Ele permite que você configure vários contêineres em um único arquivo de configuração, tornando mais fácil para você implantar e gerenciar seus aplicativos. Para instalar o Docker Compose, siga as instruções do site oficial: [Docker Compose](https://docs.docker.com/compose/install/)
 
 ## Executando o aplicativo
 
