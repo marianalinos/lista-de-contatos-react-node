@@ -1,18 +1,18 @@
 # Projeto Fullstack Node.js e React
 
-Este repositório contém o código-fonte completo do projeto desenvolvido para a vaga de desenvolvedor(a) fullstack, utilizando Node.js no backend e React no frontend.
+Este repositório contém o código-fonte completo do projeto desenvolvido como parte do processo seletivo para a vaga de desenvolvedor(a) fullstack, utilizando **Node.js** no backend e **React** no frontend.
 
 ## 🧰 Requisitos
 
-Para rodar o projeto, certifique-se de ter as seguintes ferramentas instaladas:
+Antes de executar o projeto, verifique se as seguintes ferramentas estão instaladas em sua máquina:
 
 * [Docker](https://docs.docker.com/engine/install/)
 * [Docker Compose](https://docs.docker.com/compose/install/)
-* [Node.js](https://nodejs.org/en/download) (opcional, para rodar comandos diretamente fora dos containers)
+* [Node.js](https://nodejs.org/en/download) *(opcional — necessário apenas se preferir rodar comandos fora dos containers)*
 
 ## 🚀 Executando o Projeto
 
-### 1. Clone o Repositório
+### 1. Clonar o Repositório
 
 ```bash
 git clone https://github.com/marianalinos/teste-magazord-contatos
@@ -25,17 +25,19 @@ Crie um arquivo `.env` na raiz do projeto com base no arquivo `env.sample`. Ajus
 
 ### 3. Subir os Containers
 
-Com tudo configurado, execute:
+Execute o comando abaixo para construir e iniciar os containers:
 
 ```bash
 docker compose up
 ```
 
-Este comando irá construir e iniciar os containers da aplicação (backend, frontend e banco de dados). Os serviços estarão acessíveis nos endereços e portas definidos no `.env`.
+Esse processo inicia os serviços do backend, frontend e banco de dados. Aguarde até que todos os containers estejam rodando — pode levar alguns instantes devido aos healthchecks.
 
-## ⚙️ Migrations do Banco de Dados
+Os serviços estarão acessíveis nos endereços e portas definidos no `.env`.
 
-Você pode executar as migrations de duas maneiras:
+## ⚙️ Executando as Migrations
+
+Você pode rodar as migrations de duas formas:
 
 ### Opção 1 – Via Node.js
 
@@ -47,16 +49,16 @@ npm run prisma migrate dev --schema prisma/schema.prisma
 
 ### Opção 2 – Via Docker
 
-*(O container `contatos-backend` precisa estar rodando)*
+*(com o container `contatos-backend` em execução)*
 
 ```bash
 docker exec contatos-backend npx prisma generate
 docker exec contatos-backend npx prisma migrate dev --schema prisma/schema.prisma
 ```
 
-## 🌱 Seed do Banco de Dados (Opcional)
+## 🌱 Populando o Banco de Dados (Opcional)
 
-Para popular o banco com dados iniciais:
+Também é possível adicionar dados iniciais ao banco, caso queira testar a aplicação sem fazer inserções manuais.
 
 ### Opção 1 – Via Node.js
 
@@ -73,30 +75,40 @@ docker exec contatos-backend npx prisma db seed
 
 ## 🧩 Sobre o Backend
 
-O backend foi construído com as seguintes tecnologias:
+O backend foi desenvolvido com foco na simplicidade e clareza, utilizando as seguintes tecnologias:
 
-* **Express** (API REST)
-* **Zod** (validação de dados)
-* **JWT e Bcrypt** (autenticação)
+* **Express** – estrutura da API REST
+* **Zod** – validação de dados
+* **JWT** e **Bcrypt** – autenticação e segurança
+* **Prisma** – ORM moderno para integração com o banco de dados, facilitando a manipulação e consistência dos dados.
 
-A API está disponível em `http://localhost:${SERVERPORT}` (por padrão, `5000`).
-Um arquivo `openapi.json` na raiz do projeto documenta as rotas disponíveis com exemplos de requisições.
+A API está disponível em: `http://localhost:${SERVERPORT}` (padrão: `5000`).
+As rotas estão documentadas no arquivo `openapi.json`, localizado na raiz do projeto, com exemplos de payloads para facilitar testes.
 
 ## 🎨 Sobre o Frontend
 
-O frontend foi desenvolvido com:
+O frontend foi construído com:
 
-* **React**
-* **Vite**
-* **Tailwind CSS**
+* **React** – Biblioteca JavaScript para criação de interfaces de usuário baseadas em componentes.
+* **Vite** – Ferramenta moderna e rápida para build e desenvolvimento frontend.
+* **Tailwind CSS** – Framework de CSS utilitário que facilita a criação de interfaces responsivas com classes pré-definidas.
 
-Disponível em `http://localhost:${WEBPORT}` (por padrão, `3000`).
-A tela inicial é a de login, a partir da qual é possível navegar pelas demais funcionalidades. Os ícones foram projetados para serem intuitivos, conforme os requisitos funcionais solicitados.
+Disponível em: `http://localhost:${WEBPORT}` (padrão: `3000`).
 
-## 🛑 Parando o Projeto
+A tela inicial é a de login. A navegação é simples e direta, e os ícones foram escolhidos para representar de forma intuitiva as ações previstas nos requisitos funcionais.
+
+## 🛑 Finalizando a Aplicação
 
 Para encerrar a aplicação e remover os containers, execute:
 
 ```bash
 docker compose down
 ```
+
+## 🤝 Considerações Finais
+
+Agradeço pela oportunidade de participar do processo seletivo e pelo tempo dedicado à análise deste projeto.
+Fico totalmente à disposição para esclarecimentos, sugestões ou feedbacks.
+
+Com apreço,
+**Mariana Lino da Silva**
