@@ -1,19 +1,17 @@
 import { Request, Response } from "express";
-import { ContatoService } from "../services/contatoService";
 import { ContatoRepository } from "../repositories/contatoRepository";
 import { CreateContatoDto, UpdateContatoDto } from "../dtos/contatoDto";
 
 export class ContatoController {
-  private contatoService: ContatoService;
 
-  constructor(contatoRepository: ContatoRepository) {
-    this.contatoService = new ContatoService(contatoRepository);
+  constructor(private contatoRepository: ContatoRepository) {
+
   }
 
   public async create(req: Request, res: Response): Promise<void> {
     try {
       const contatoData: CreateContatoDto = req.body;
-      const novoContato = await this.contatoService.createContato(contatoData);
+      const novoContato = await this.contatoRepository.createContato(contatoData);
       res.status(201).json(novoContato);
     } catch (error) {
       console.log(error)
@@ -25,7 +23,7 @@ export class ContatoController {
     try {
       const contatoId = parseInt(req.params.id);
       const contatoData: UpdateContatoDto = req.body;
-      const updatedContato = await this.contatoService.updateContato(contatoId, contatoData);
+      const updatedContato = await this.contatoRepository.updateContato(contatoId, contatoData);
       res.json(updatedContato);
     } catch (error) {
       res.status(500).json({ error: "Erro ao atualizar contato" });
@@ -35,7 +33,7 @@ export class ContatoController {
   public async findById(req: Request, res: Response): Promise<void> {
     try {
       const contatoId = parseInt(req.params.id);
-      const contato = await this.contatoService.getContatoById(contatoId);
+      const contato = await this.contatoRepository.getContatoById(contatoId);
       if (!contato) {
         res.status(404).json({ error: "Contato não encontrado" });
         return;
@@ -49,7 +47,7 @@ export class ContatoController {
   public async findAll(req: Request, res: Response): Promise<void> {
     try {
       const pessoaId = req.query.pessoa_id ? parseInt(req.query.pessoa_id as string) : undefined;
-      const contatos = await this.contatoService.getAllContatos(pessoaId);
+      const contatos = await this.contatoRepository.getAllContatos(pessoaId);
       res.json(contatos);
     } catch (error) {
       res.status(500).json({ error: "Erro ao buscar contatos" });
@@ -59,7 +57,7 @@ export class ContatoController {
   public async delete(req: Request, res: Response): Promise<void> {
     try {
       const contatoId = parseInt(req.params.id);
-      await this.contatoService.deleteContato(contatoId);
+      await this.contatoRepository.deleteContato(contatoId);
       res.status(204).send();
     } catch (error) {
       res.status(500).json({ error: "Erro ao deletar contato" });

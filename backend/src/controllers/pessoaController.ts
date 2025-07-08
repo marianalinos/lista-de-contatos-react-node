@@ -1,19 +1,16 @@
 import { Request, Response } from "express";
-import { PessoaService } from "../services/pessoaService";
 import { PessoaRepository } from "../repositories/pessoaRepository";
 import { CreatePessoaDto, UpdatePessoaDto } from "../dtos/pessoaDto";
 
 export class PessoaController {
-    private pessoaService: PessoaService;
 
-    constructor(pessoaRepository: PessoaRepository) {
-        this.pessoaService = new PessoaService(pessoaRepository);
+    constructor(private pessoaRepository: PessoaRepository) {
     }
 
     public async create(req: Request, res: Response): Promise<void> {
         try {
             const pessoaData: CreatePessoaDto = req.body;
-            const novaPessoa = await this.pessoaService.createPessoa(pessoaData);
+            const novaPessoa = await this.pessoaRepository.createPessoa(pessoaData);
             res.status(201).json(novaPessoa);
         } catch (error) {
             res.status(500).json({ error: "Erro ao criar pessoa" });
@@ -24,7 +21,7 @@ export class PessoaController {
         try {
             const pessoaId = parseInt(req.params.id);
             const pessoaData: UpdatePessoaDto = req.body;
-            const updatedPessoa = await this.pessoaService.updatePessoa(pessoaId, pessoaData);
+            const updatedPessoa = await this.pessoaRepository.updatePessoa(pessoaId, pessoaData);
             res.json(updatedPessoa);
         } catch (error) {
             res.status(500).json({ error: "Erro ao atualizar pessoa" });
@@ -34,7 +31,7 @@ export class PessoaController {
     public async findById(req: Request, res: Response): Promise<void> {
         try {
             const pessoaId = parseInt(req.params.id);
-            const pessoa = await this.pessoaService.getPessoaById(pessoaId);
+            const pessoa = await this.pessoaRepository.getPessoaById(pessoaId);
             if (!pessoa) {
                 res.status(404).json({ error: "Pessoa não encontrada" });
                 return;
@@ -47,7 +44,7 @@ export class PessoaController {
 
     public async findAll(req: Request, res: Response): Promise<void> {
         try {
-            const pessoas = await this.pessoaService.getAllPessoas();
+            const pessoas = await this.pessoaRepository.getAllPessoas();
             res.json(pessoas);
         } catch (error) {
             res.status(500).json({ error: "Erro ao buscar pessoas" });
@@ -57,7 +54,7 @@ export class PessoaController {
     public async delete(req: Request, res: Response): Promise<void> {
         try {
             const pessoaId = parseInt(req.params.id);
-            await this.pessoaService.deletePessoa(pessoaId);
+            await this.pessoaRepository.deletePessoa(pessoaId);
             res.status(204).send();
         } catch (error) {
             res.status(500).json({ error: "Erro ao deletar pessoa" });

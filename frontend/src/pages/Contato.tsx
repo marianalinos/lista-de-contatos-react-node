@@ -1,20 +1,23 @@
-import { PencilIcon, XCircleIcon, PlusCircle } from "@phosphor-icons/react";
+import { PencilIcon, XCircleIcon, PlusIcon } from "@phosphor-icons/react";
 import {
   createContato,
   deleteContato,
   getContatos,
+  updateContato,
   type Contato,
 } from "../api/contatos";
 import { useEffect, useState } from "react";
 import { GenericForm } from "../components/GenericForm";
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { getPessoaById } from "../api/pessoas";
 
-export default function Contato() {
+export default function ContatoPage() {
   const [contatos, setContatos] = useState<Contato[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingContato, setEditingContato] = useState<Contato | null>(null);
   const { pessoaId } = useParams<{ pessoaId: string }>();
+  const navigate = useNavigate();
 
   const loadContatos = async () => {
     const response = await getContatos(Number(pessoaId));
@@ -31,7 +34,24 @@ export default function Contato() {
   };
 
   useEffect(() => {
-    loadContatos();
+    async function start() {
+      if (!pessoaId) {
+        console.error("Pessoa ID não encontrado na URL.");
+        return;
+      }
+      try {
+        const pessoa = await getPessoaById(Number(pessoaId));
+        if (!pessoa) {
+          console.error("Pessoa não encontrada.");
+          navigate(`/pessoas`);
+        }
+      } catch (error) {
+        console.error("Erro ao buscar pessoa:", error);
+        navigate(`/pessoas`);
+      }
+      loadContatos();
+    }
+    start();
   }, []);
 
   const formFields = [
@@ -76,7 +96,11 @@ export default function Contato() {
   };
 
   const handleSubmitUpdate = async (data: Record<string, string>) => {
-    alert("Atualizado:\n" + JSON.stringify(data, null, 2));
+    await updateContato(Number(data.contato_id), {
+      contato_tipo: data.contato_tipo == "true" ? true : false,
+      contato_descricao: data.contato_descricao,
+      contato_pessoa_id: Number(pessoaId),
+    });
     setEditingContato(null);
     await loadContatos();
   };
@@ -101,7 +125,7 @@ export default function Contato() {
           onClick={openNewContactForm}
           className="flex items-center gap-1 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
         >
-          <PlusCircle size={20} />
+          <PlusIcon size={20} />
           Novo
         </button>
       </div>
