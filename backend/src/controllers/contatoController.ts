@@ -1,66 +1,115 @@
 import { Request, Response } from "express";
 import { ContatoRepository } from "../repositories/contatoRepository";
 import { CreateContatoDto, UpdateContatoDto } from "../dtos/contatoDto";
+import { PessoaRepository } from "../repositories/pessoaRepository";
+import { AbstractController } from "./abstractController";
 
-export class ContatoController {
-
-  constructor(private contatoRepository: ContatoRepository) {
-
+export class ContatoController extends AbstractController {
+  constructor(
+    private contatoRepository: ContatoRepository,
+    private pessoaRepository: PessoaRepository
+  ) {
+    super();
   }
 
-  public async create(req: Request, res: Response): Promise<void> {
+  public create = async (req: Request, res: Response): Promise<void> => {
     try {
       const contatoData: CreateContatoDto = req.body;
-      const novoContato = await this.contatoRepository.createContato(contatoData);
+
+      if (!(await this.pessoaExists(contatoData.contato_pessoa_id, res)))
+        return;
+
+      const novoContato = await this.contatoRepository.createContato(
+        contatoData
+      );
       res.status(201).json(novoContato);
-    } catch (error) {
-      console.log(error)
-      res.status(500).json({ error: "Erro ao criar contato" });
+    } catch {
+      this.internalError(res, "criar contato");
     }
-  }
+  };
 
-  public async update(req: Request, res: Response): Promise<void> {
+  public update = async (req: Request, res: Response): Promise<void> => {
     try {
-      const contatoId = parseInt(req.params.id);
+      const contatoId = Number(req.params.id);
       const contatoData: UpdateContatoDto = req.body;
-      const updatedContato = await this.contatoRepository.updateContato(contatoId, contatoData);
-      res.json(updatedContato);
-    } catch (error) {
-      res.status(500).json({ error: "Erro ao atualizar contato" });
-    }
-  }
 
-  public async findById(req: Request, res: Response): Promise<void> {
+      if (!(await this.contatoExists(contatoId, res))) return;
+      if (!(await this.pessoaExists(contatoData.contato_pessoa_id, res)))
+        return;
+
+      const updatedContato = await this.contatoRepository.updateContato(
+        contatoId,
+        contatoData
+      );
+      res.json(updatedContato);
+    } catch {
+      this.internalError(res, "atualizar contato");
+    }
+  };
+
+  public findById = async (req: Request, res: Response): Promise<void> => {
     try {
-      const contatoId = parseInt(req.params.id);
+      const contatoId = Number(req.params.id);
+
       const contato = await this.contatoRepository.getContatoById(contatoId);
       if (!contato) {
         res.status(404).json({ error: "Contato não encontrado" });
         return;
       }
-      res.json(contato);
-    } catch (error) {
-      res.status(500).json({ error: "Erro ao buscar contato" });
-    }
-  }
 
-  public async findAll(req: Request, res: Response): Promise<void> {
+      res.json(contato);
+    } catch {
+      this.internalError(res, "buscar contato");
+    }
+  };
+
+  public findAll = async (req: Request, res: Response): Promise<void> => {
     try {
-      const pessoaId = req.query.pessoa_id ? parseInt(req.query.pessoa_id as string) : undefined;
+      const pessoaId = req.query.pessoa_id
+        ? Number(req.query.pessoa_id)
+        : undefined;
+
       const contatos = await this.contatoRepository.getAllContatos(pessoaId);
       res.json(contatos);
-    } catch (error) {
-      res.status(500).json({ error: "Erro ao buscar contatos" });
+    } catch {
+      this.internalError(res, "buscar contatos");
     }
+  };
+
+  public delete = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const contatoId = Number(req.params.id);
+
+      if (!(await this.contatoExists(contatoId, res))) return;
+
+      await this.contatoRepository.deleteContato(contatoId);
+      res.sendStatus(204);
+    } catch {
+      this.internalError(res, "deletar contato");
+    }
+  };
+
+  private async pessoaExists(
+    pessoaId: number,
+    res: Response
+  ): Promise<boolean> {
+    const pessoa = await this.pessoaRepository.getPessoaById(pessoaId);
+    if (!pessoa) {
+      res.status(404).json({ error: "Pessoa não encontrada" });
+      return false;
+    }
+    return true;
   }
 
-  public async delete(req: Request, res: Response): Promise<void> {
-    try {
-      const contatoId = parseInt(req.params.id);
-      await this.contatoRepository.deleteContato(contatoId);
-      res.status(204).send();
-    } catch (error) {
-      res.status(500).json({ error: "Erro ao deletar contato" });
+  private async contatoExists(
+    contatoId: number,
+    res: Response
+  ): Promise<boolean> {
+    const contato = await this.contatoRepository.getContatoById(contatoId);
+    if (!contato) {
+      res.status(404).json({ error: "Contato não encontrado" });
+      return false;
     }
+    return true;
   }
 }
