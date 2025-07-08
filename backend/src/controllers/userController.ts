@@ -1,5 +1,5 @@
 import e from "express";
-import { AuthDto } from "../dtos/authDto";
+import { AuthDto } from "../dtos/userDto";
 import { UserRepository } from "../repositories/userRepository";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
