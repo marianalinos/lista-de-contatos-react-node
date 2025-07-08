@@ -58,20 +58,31 @@ export class UserController extends AbstractController {
         return;
       }
 
+      const issuedAt = Math.floor(Date.now() / 1000);
+      const expiresIn = 60 * 60;
+      const expirationTime = issuedAt + expiresIn;
+
       const token = jwt.sign(
-        { id: user.user_id, email: user.user_email },
+        {
+          id: user.user_id,
+          email: user.user_email,
+          iat: issuedAt,
+          exp: expirationTime,
+        },
         this.JWT_SECRET,
-        { expiresIn: "1h" }
       );
 
       res.status(200).json({
         user: {
           id: user.user_id,
           email: user.user_email,
+          iat: issuedAt,
+          exp: expirationTime,
         },
         token,
       });
-    } catch {
+    } catch (err) {
+      console.error("Erro ao fazer login:", err);
       this.internalError(res, "fazer login");
     }
   };

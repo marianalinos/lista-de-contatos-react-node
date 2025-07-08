@@ -1,7 +1,5 @@
-import axios from "axios";
 import type { AxiosResponse } from "axios";
-
-const API_BASE_URL = "http://localhost:5000/api";
+import { privateApi } from "./axiosInstance"; 
 
 export type Contato = {
   contato_id: number;
@@ -11,22 +9,14 @@ export type Contato = {
 };
 
 export async function getContatos(pessoa_id?: number): Promise<Contato[]> {
-  const response: AxiosResponse<Contato[]> = await axios.get(
-    `${API_BASE_URL}/contatos`,
-    {
-      params: {
-        pessoa_id,
-      },
-    }
-  );
+  const response: AxiosResponse<Contato[]> = await privateApi.get("/contatos", {
+    params: { pessoa_id },
+  });
   return response.data;
 }
 
 export async function createContato(contato: Omit<Contato, "contato_id">) {
-  const response: AxiosResponse<Contato> = await axios.post(
-    `${API_BASE_URL}/contatos`,
-    contato
-  );
+  const response: AxiosResponse<Contato> = await privateApi.post("/contatos", contato);
   return response.data;
 }
 
@@ -34,16 +24,11 @@ export async function updateContato(
   id: number,
   contato: Omit<Contato, "contato_id">
 ) {
-  const response: AxiosResponse<Contato> = await axios.put(
-    `${API_BASE_URL}/contatos/${id}`,
-    contato
-  );
+  const response: AxiosResponse<Contato> = await privateApi.put(`/contatos/${id}`, contato);
   return response.data;
 }
 
 export async function deleteContato(id: number) {
-  const response: AxiosResponse<void> = await axios.delete(
-    `${API_BASE_URL}/contatos/${id}`
-  );
+  const response: AxiosResponse<void> = await privateApi.delete(`/contatos/${id}`);
   return response.data;
 }
