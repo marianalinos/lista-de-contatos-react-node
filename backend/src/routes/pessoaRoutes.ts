@@ -2,9 +2,10 @@ import express from "express";
 import { PrismaClient } from "@prisma/client";
 import { PessoaRepository } from "../repositories/pessoaRepository";
 import { PessoaController } from "../controllers/pessoaController";
-import { validateRequest } from "../middlewares/validateRequest";
+import { validateRequestMiddleware } from "../middlewares/validateRequestMiddleware";
 import { CreatePessoaSchema } from "../dtos/pessoaDto";
 import { IdParamSchema } from "../dtos/baseDto";
+import { jwtMiddleware } from "../middlewares/jwtMiddleware";
 
 const router = express.Router();
 
@@ -13,23 +14,31 @@ const controller = new PessoaController(repository);
 
 router.post(
   "/",
-  validateRequest(CreatePessoaSchema, "body"),
+  jwtMiddleware,
+  validateRequestMiddleware(CreatePessoaSchema, "body"),
   controller.create
 );
 
 router.put(
   "/:id",
-  validateRequest(IdParamSchema, "params"),
-  validateRequest(CreatePessoaSchema, "body"),
+  jwtMiddleware,
+  validateRequestMiddleware(IdParamSchema, "params"),
+  validateRequestMiddleware(CreatePessoaSchema, "body"),
   controller.update
 );
 
-router.get("/:id", validateRequest(IdParamSchema, "params"), (req, res) =>
-  controller.findById(req, res)
+router.get(
+  "/:id",
+  jwtMiddleware,
+  validateRequestMiddleware(IdParamSchema, "params"),
+  (req, res) => controller.findById(req, res)
 );
 router.get("/", (req, res) => controller.findAll(req, res));
-router.delete("/:id", validateRequest(IdParamSchema, "params"), (req, res) =>
-  controller.delete(req, res)
+router.delete(
+  "/:id",
+  jwtMiddleware,
+  validateRequestMiddleware(IdParamSchema, "params"),
+  (req, res) => controller.delete(req, res)
 );
 
 export default router;
