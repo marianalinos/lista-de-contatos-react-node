@@ -86,7 +86,7 @@ export default function ContatoPage() {
     }
 
     await createContato({
-      contato_tipo: Boolean(data.contato_tipo),
+      contato_tipo: data.contato_tipo == "true" ? true : false,
       contato_descricao: data.contato_descricao,
       contato_pessoa_id: Number(pessoaId),
     });
@@ -153,7 +153,7 @@ export default function ContatoPage() {
                 editingContato?.contato_id === contato.contato_id;
               return (
                 <React.Fragment key={contato.contato_id}>
-                  <tr className="hover:bg-gray-50">
+                  <tr className="hover:bg-gray-200">
                     <td className="px-4 py-2 border-b">
                       {contato.contato_tipo ? "Email" : "Telefone"}
                     </td>

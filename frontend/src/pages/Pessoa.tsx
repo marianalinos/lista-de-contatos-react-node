@@ -1,4 +1,9 @@
-import { PencilIcon, XCircleIcon, PlusIcon, EyeIcon } from "@phosphor-icons/react";
+import {
+  PencilIcon,
+  XCircleIcon,
+  PlusIcon,
+  EyeIcon,
+} from "@phosphor-icons/react";
 import {
   createPessoa,
   deletePessoa,
@@ -15,6 +20,7 @@ export default function PessoaPage() {
   const [pessoas, setPessoas] = useState<Pessoa[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingPessoa, setEditingPessoa] = useState<Pessoa | null>(null);
+  const [searchTerm, setSearchTerm] = useState(""); // <-- Search term state
   const navigate = useNavigate();
 
   const loadPessoas = async () => {
@@ -95,6 +101,11 @@ export default function PessoaPage() {
     setEditingPessoa(pessoa);
   };
 
+  // Filter pessoas by nome using the searchTerm
+  const filteredPessoas = pessoas.filter((pessoa) =>
+    pessoa.pessoa_nome.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="p-4 max-w-3xl mx-auto">
       <div className="flex items-center justify-between mb-4">
@@ -107,6 +118,15 @@ export default function PessoaPage() {
           Nova
         </button>
       </div>
+
+      {/* Search input */}
+      <input
+        type="text"
+        placeholder="Buscar por nome..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="mb-4 w-full px-3 py-2 border border-gray-300 rounded"
+      />
 
       <GenericForm
         isOpen={modalOpen}
@@ -126,7 +146,7 @@ export default function PessoaPage() {
             </tr>
           </thead>
           <tbody>
-            {pessoas.map((pessoa) => {
+            {filteredPessoas.map((pessoa) => {
               const isEditing = editingPessoa?.pessoa_id === pessoa.pessoa_id;
               return (
                 <React.Fragment key={pessoa.pessoa_id}>
@@ -141,7 +161,7 @@ export default function PessoaPage() {
                       />
                       <XCircleIcon
                         size={20}
-                        className="inline text-red-500 cursor-pointer"
+                        className="inline mr-2 text-red-500 cursor-pointer"
                         onClick={() => handleDelete(pessoa.pessoa_id)}
                       />
                       <EyeIcon
@@ -176,7 +196,7 @@ export default function PessoaPage() {
           </tbody>
         </table>
 
-        {pessoas.length === 0 && (
+        {filteredPessoas.length === 0 && (
           <p className="text-gray-500 text-center mt-4">
             Nenhuma pessoa encontrada.
           </p>
