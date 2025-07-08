@@ -112,7 +112,7 @@ export default function PessoaPage() {
         <h1 className="text-2xl font-bold">Pessoas</h1>
         <button
           onClick={openNewPessoaForm}
-          className="flex items-center gap-1 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          className="flex items-center gap-1 px-4 py-2 bg-pink-500 text-white rounded hover:bg-pink-600"
         >
           <PlusIcon size={20} />
           Nova
