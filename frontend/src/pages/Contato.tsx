@@ -1,4 +1,9 @@
-import { PencilIcon, XCircleIcon, PlusIcon } from "@phosphor-icons/react";
+import {
+  PencilIcon,
+  XCircleIcon,
+  PlusIcon,
+  ArrowLeftIcon,
+} from "@phosphor-icons/react";
 import {
   createContato,
   deleteContato,
@@ -105,13 +110,11 @@ export default function ContatoPage() {
     await loadContatos();
   };
 
-  // When opening new contact form, close editing form
   const openNewContactForm = () => {
     setEditingContato(null);
     setModalOpen(true);
   };
 
-  // When editing a contact, close new contact form
   const openEditContactForm = (contato: Contato) => {
     setModalOpen(false);
     setEditingContato(contato);
@@ -120,7 +123,17 @@ export default function ContatoPage() {
   return (
     <div className="p-4 max-w-3xl mx-auto">
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-bold">Contatos</h1>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => navigate(-1)}
+            className="p-2 text-gray-600 hover:text-black cursor-pointer"
+            title="Voltar"
+          >
+            <ArrowLeftIcon size={24} />
+          </button>
+          <h1 className="text-2xl font-bold">Contatos</h1>
+        </div>
+
         <button
           onClick={openNewContactForm}
           className="flex items-center gap-1 px-4 py-2 bg-pink-500 text-white rounded hover:bg-pink-600"
