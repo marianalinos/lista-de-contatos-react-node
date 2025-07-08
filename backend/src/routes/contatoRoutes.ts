@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import { ContatoRepository } from "../repositories/contatoRepository";
 import { ContatoController } from "../controllers/contatoController";
 import { validateRequestMiddleware } from "../middlewares/validateRequestMiddleware";
-import { CreateContatoSchema } from "../dtos/contatoDto";
+import { CreateContatoSchema, ReadContatosSchema } from "../dtos/contatoDto";
 import { IdParamSchema } from "../dtos/baseDto";
 import { jwtMiddleware } from "../middlewares/jwtMiddleware";
 import { PessoaRepository } from "../repositories/pessoaRepository";
@@ -35,7 +35,12 @@ router.get(
   validateRequestMiddleware(IdParamSchema, "params"),
   (req, res) => controller.findById(req, res)
 );
-router.get("/", async (req, res) => controller.findAll(req, res));
+router.get(
+  "/",
+  jwtMiddleware,
+  validateRequestMiddleware(ReadContatosSchema, "params"),
+  async (req, res) => controller.findAll(req, res)
+);
 router.delete(
   "/:id",
   jwtMiddleware,

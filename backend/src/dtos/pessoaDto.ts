@@ -7,5 +7,10 @@ export const CreatePessoaSchema = z.object({
     .regex(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, "CPF deve estar no formato 000.000.000-00"),
 });
 
+export const ReadPessoasSchema = z.object({
+  pessoa_nome: z.string().optional(),
+}).strict();
+
 export type CreatePessoaDto = z.infer<typeof CreatePessoaSchema>;
 export type UpdatePessoaDto = z.infer<typeof CreatePessoaSchema>;
+export type ReadPessoasDto = z.infer<typeof ReadPessoasSchema>;

@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { PessoaModel } from "../models/pessoaModel";
-import { CreatePessoaDto, UpdatePessoaDto } from "../dtos/pessoaDto";
+import { CreatePessoaDto, ReadPessoasDto, UpdatePessoaDto } from "../dtos/pessoaDto";
 
 export class PessoaRepository {
   private prisma: PrismaClient;
@@ -53,8 +53,18 @@ export class PessoaRepository {
     );
   }
 
-  public async getAllPessoas(): Promise<PessoaModel[]> {
-    const pessoas = await this.prisma.pessoa.findMany();
+  public async getAllPessoas(query: ReadPessoasDto): Promise<PessoaModel[]> {
+    const pessoas = await this.prisma.pessoa.findMany({
+      where: {
+        pessoa_nome: query.pessoa_nome ? { contains: query.pessoa_nome } : undefined,
+      },
+      orderBy: { pessoa_id: "asc" },
+      select: {
+        pessoa_id: true,
+        pessoa_nome: true,
+        pessoa_cpf: true,
+      },
+    });
     return pessoas.map(
       (p: { pessoa_id: number; pessoa_nome: string; pessoa_cpf: string }) =>
         new PessoaModel(p.pessoa_id, p.pessoa_nome, p.pessoa_cpf)

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { PessoaRepository } from "../repositories/pessoaRepository";
-import { CreatePessoaDto, UpdatePessoaDto } from "../dtos/pessoaDto";
+import { CreatePessoaDto, ReadPessoasDto, UpdatePessoaDto } from "../dtos/pessoaDto";
 import { AbstractController } from "./abstractController";
 
 export class PessoaController extends AbstractController {
@@ -48,9 +48,10 @@ export class PessoaController extends AbstractController {
     }
   };
 
-  public findAll = async (_req: Request, res: Response): Promise<void> => {
+  public findAll = async (req: Request, res: Response): Promise<void> => {
     try {
-      const pessoas = await this.pessoaRepository.getAllPessoas();
+      const query: ReadPessoasDto = req.query;
+      const pessoas = await this.pessoaRepository.getAllPessoas(query);
       res.json(pessoas);
     } catch {
       this.internalError(res, "buscar pessoas");

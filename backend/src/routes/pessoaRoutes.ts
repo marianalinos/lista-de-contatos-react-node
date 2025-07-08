@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import { PessoaRepository } from "../repositories/pessoaRepository";
 import { PessoaController } from "../controllers/pessoaController";
 import { validateRequestMiddleware } from "../middlewares/validateRequestMiddleware";
-import { CreatePessoaSchema } from "../dtos/pessoaDto";
+import { CreatePessoaSchema, ReadPessoasSchema } from "../dtos/pessoaDto";
 import { IdParamSchema } from "../dtos/baseDto";
 import { jwtMiddleware } from "../middlewares/jwtMiddleware";
 
@@ -33,7 +33,12 @@ router.get(
   validateRequestMiddleware(IdParamSchema, "params"),
   (req, res) => controller.findById(req, res)
 );
-router.get("/", (req, res) => controller.findAll(req, res));
+router.get(
+  "/",
+  jwtMiddleware,
+  validateRequestMiddleware(ReadPessoasSchema, "query"),
+  (req, res) => controller.findAll(req, res)
+);
 router.delete(
   "/:id",
   jwtMiddleware,

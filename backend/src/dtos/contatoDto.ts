@@ -40,5 +40,10 @@ export const CreateContatoSchema = z.object({
   }
 });
 
+export const ReadContatosSchema = z.object({
+  pessoa_id: z.number().int().positive().optional(),
+}).strict();
+
 export type CreateContatoDto = z.infer<typeof CreateContatoSchema>;
 export type UpdateContatoDto = z.infer<typeof CreateContatoSchema>;
+export type ReadContatosDto = z.infer<typeof ReadContatosSchema>;
