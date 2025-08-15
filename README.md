@@ -15,8 +15,8 @@ Antes de executar o projeto, verifique se as seguintes ferramentas estão instal
 ### 1. Clonar o Repositório
 
 ```bash
-git clone https://github.com/marianalinos/teste-magazord-contatos
-cd teste-magazord-contatos
+git clone https://github.com/marianalinos/lista-de-contatos-react-node
+cd lista-de-contatos-react-node
 ```
 
 ### 2. Configurar Variáveis de Ambiente
